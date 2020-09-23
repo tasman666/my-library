@@ -3,24 +3,32 @@ package pl.brightworks.mylib
 import java.util.UUID
 
 import cats.effect._
-import org.http4s._
+import io.circe.generic.auto._
+import io.circe.syntax._
+import org.http4s.{HttpRoutes, _}
+import org.http4s.circe._
 import org.http4s.dsl.io._
 
 object LibraryService {
 
   case class Library(id: UUID, name: String)
 
-  implicit def libraryEncoder: EntityEncoder[IO, Library] = ???
-  implicit def librariesEncoder: EntityEncoder[IO, Seq[Library]] = ???
+  val values = Seq(
+    Library(UUID.randomUUID(), "book library"),
+    Library(UUID.randomUUID(), "cd library"),
+  )
 
-  def getLibrary(id: UUID): IO[Library] = ???
-  def getLibraries(): IO[Seq[Library]] = ???
+  def getLibrary(id: UUID): IO[Option[Library]] = IO(values.find(_.id == id))
+  def getLibraries: IO[Seq[Library]] = IO(values)
 
-  val libraryServiceRoutes = HttpRoutes.of[IO] {
+  val libraryServiceRoutes: HttpRoutes[IO] = HttpRoutes.of[IO] {
     case GET -> Root / "libraries"  =>
-      getLibraries().flatMap(Ok(_))
+      getLibraries.flatMap(libraries => Ok(libraries.asJson))
     case GET -> Root / "libraries" / UUIDVar(libraryId) =>
-      getLibrary(libraryId).flatMap(Ok(_))
+      getLibrary(libraryId).flatMap {
+      case Some(library) => Ok(library.asJson)
+      case None => NotFound()
+    }
   }
 
 }
