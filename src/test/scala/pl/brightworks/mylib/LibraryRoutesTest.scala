@@ -28,8 +28,6 @@ class LibraryRoutesTest extends AnyFlatSpec with Matchers {
         jsonFrom(lib1),
         jsonFrom(lib2),
       )
-
-
     check(response, Status.Ok, Some(expectedJson))
   }
 
@@ -40,7 +38,6 @@ class LibraryRoutesTest extends AnyFlatSpec with Matchers {
     val response = routes.orNotFound.run(Request(method = Method.GET, uri = uri"/libraries"))
 
     val expectedJson = Json.arr()
-
     check(response, Status.Ok, Some(expectedJson))
   }
 
@@ -53,7 +50,6 @@ class LibraryRoutesTest extends AnyFlatSpec with Matchers {
     val response = routes.orNotFound.run(Request(method = Method.GET, uri = new Uri().withPath(s"/libraries/${lib2.id.toString}")))
 
     val expectedJson = jsonFrom(lib2)
-
     check(response, Status.Ok, Some(expectedJson))
   }
 
@@ -68,7 +64,7 @@ class LibraryRoutesTest extends AnyFlatSpec with Matchers {
     check(response, Status.NotFound, None)
   }
 
-  it should "returr not found code if no recognized uri" in {
+  it should "return not found code if no recognized uri" in {
     val lib1 = Library(UUID.randomUUID(), "lib1")
     val lib2 = Library(UUID.randomUUID(), "lib2")
     val repo = createRepo(Seq(lib1, lib2))
