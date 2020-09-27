@@ -13,7 +13,15 @@ import scala.concurrent.ExecutionContext.global
 object LibraryApp extends IOApp {
 
   def run(args: List[String]) = {
-    val services = LibraryService.libraryServiceRoutes <+> PlaceService.placeServiceRoutes
+    val libraryRepo = new InMemoryLibraryRepo
+    val libraryService= new LibraryService(libraryRepo)
+    val libraryRoutes = new LibraryRoutes(libraryService)
+
+    val placeRepo = new InMemoryPlaceRepo
+    val placeService = new PlaceService(placeRepo)
+    val placeRoutes = new PlaceRoutes(placeService)
+
+    val services = libraryRoutes.create() <+> placeRoutes.create()
 
     val httpApp = Router("/api" -> services).orNotFound
 

@@ -19,9 +19,9 @@ libraryDependencies ++= Seq(
 
 )
 
-scalacOptions ++= Seq(
-  "-feature",
-  "-deprecation",
-  "-unchecked",
-  "-language:postfixOps",
-  "-language:higherKinds")
+//scalacOptions ++= Seq(
+//  "-feature",
+//  "-deprecation",
+//  "-unchecked",
+//  "-language:postfixOps",
+//  "-language:higherKinds")
